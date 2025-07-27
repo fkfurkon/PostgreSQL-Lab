@@ -126,6 +126,31 @@ def note_delete(note_id):
 
     return flask.redirect(flask.url_for("index"))
 
+# delete tags
+@app.route("/tags/<tag_name>/delete", methods=["POST"])
+def tag_delete(tag_name):
+    db = models.db
+    tag = (
+        db.session.execute(db.select(models.Tag).where(models.Tag.name == tag_name))
+        .scalars()
+        .first()
+    )
+    if not tag:
+        flask.abort(404)
+
+    # Remove the tag from all notes
+    notes = db.session.execute(
+        db.select(models.Note).where(models.Note.tags.any(id=tag.id))
+    ).scalars()
+    for note in notes:
+        note.tags.remove(tag)
+
+    # Delete the tag itself
+    db.session.delete(tag)
+    db.session.commit()
+
+    return flask.redirect(flask.url_for("index"))
+
 class DeleteForm(FlaskForm):
     pass
 

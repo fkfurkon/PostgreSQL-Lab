@@ -22,28 +22,36 @@
     </div>
   </div> -->
   <div class="card-body">
-  <h4 class="card-title">{{ note.title }}</h4>
-  <div class="card-text my-3">
-    {{ note.description }}
-  </div>
-  <div class="card-footer text-muted">
-    Tags: 
-    {% for t in note.tags %}
+    <h4 class="card-title">{{ note.title }}</h4>
+    <div class="card-text my-3">
+      {{ note.description }}
+    </div>
+    <div class="card-footer text-muted">
+      Tags:
+      {% for t in note.tags %}
       <a href="{{ url_for('tags_view', tag_name=t.name) }}">{{ t.name }}</a>
-    {% endfor %}
-    <br>
-    Last update: {{ note.updated_date }}
-    <br>
-  </div>
-      <a class="btn btn-sm btn-warning mt-2" href="{{ url_for('note_edit', note_id=note.id) }}">Edit</a>
-<form action="{{ url_for('note_delete', note_id=note.id) }}" method="post" class="d-inline">
-  {{ delete_form.hidden_tag() }}
-  <button type="submit" class="btn btn-sm btn-danger mt-2">Delete</button>
-</form>
+      <!-- delete tag-->
+      <form
+        action="{{ url_for('tag_delete', note_id=note.id, tag_name=t.name) }}"
+        method="post" class="d-inline">
+        {{ delete_form.hidden_tag() }}
+        <button type="submit" class="btn btn-sm btn-danger">x</button>
+      </form>
+      {% endfor %}
+      <br>
+      Last update: {{ note.updated_date }}
+      <br>
+    </div>
+    <a class="btn btn-sm btn-warning mt-2"
+      href="{{ url_for('note_edit', note_id=note.id) }}">Edit</a>
+    <form action="{{ url_for('note_delete', note_id=note.id) }}" method="post"
+      class="d-inline">
+      {{ delete_form.hidden_tag() }}
+      <button type="submit" class="btn btn-sm btn-danger mt-2">Delete</button>
+    </form>
 
-</div>
+  </div>
 
 </div>
 {% endfor %}
 {% endblock %}
-
